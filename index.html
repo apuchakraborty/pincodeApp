@@ -1,0 +1,205 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>Pincode App</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarTogglerDemo01">
+          <a class="navbar-brand" href="#">PincodeApp</a>
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+           
+             <li class="nav-item active">
+              <a class="nav-link" href="index.html">Search by Pincode <span class="sr-only">(current)</span></a>
+            </li>
+
+             <li class="nav-item active">
+              <a class="nav-link" href="bypost.html">Search by Post Office <span class="sr-only">(current)</span></a>
+            </li>
+          
+          </ul>
+          
+        </div>
+      </nav>
+
+
+    <section class="mt-3">
+        <div class="container">
+            <div class="row">
+               <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item active" aria-current="page">Home</li>
+                    </ol>
+                  </nav>
+               </div>
+            </div>
+            <div class="row">
+                
+
+                <div class="col-md-12">
+                    <div class="container">
+                       
+
+                       <div id="output"></div>
+                       <form id="addPinpost">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="">Enter Your Pincode</label>
+                              <input type="text" name="pin" class="form-control" id="pin"  >
+                            </div>
+                            
+                          
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="submit" class="btn btn-dark" value="submit">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div id="main">
+    
+  </div>
+
+  <div id="state"></div>
+                          </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript">
+    document.getElementById('addPinpost').addEventListener('submit', addPinpost);
+
+    function addPinpost(e){
+      e.preventDefault();
+
+      let pin = document.getElementById('pin').value;
+
+      if (pin == "" ) {
+        const myvar = document.getElementById('output').innerHTML = "<div class='alert alert-danger'>Pincode must be filled out</div>";
+        return false;
+      }
+
+       if (pin.length != 6 ) {
+        const myvar = document.getElementById('output').innerHTML = "<div class='alert alert-danger'>Pincode must be 6</div>";
+        return false;
+      }
+
+
+      fetch(`https://api.postalpincode.in/pincode/${pin}`)
+      .then((res) => res.json())
+      .then((data) => {
+       const msg = data[0]['Message'];
+        
+        if(data[0]['PostOffice']){
+          let main = `<div class="alert alert-success mt-3 mb-4">${msg}</div>`;
+          
+        data[0]['PostOffice'].forEach(function(post){
+          main += `
+            <div class="card card-body mb-3">
+              <h5 class="card-title">${post.Name}</h5>
+
+              <div class="card-text">
+
+                  <table class="table">
+                      
+                        <tr>
+                          <td><strong>Block : </strong></td>
+                          <td>${post.Block}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>BranchType : </strong></td>
+                          <td>${post.BranchType}</td>
+                        </tr>
+                         <tr>
+                           <td><strong>Circle : </strong></td>
+                          <td>${post.Circle}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Country : </strong></td>
+                          <td>${post.Country}</td>
+                        </tr>
+                       
+                        <tr>
+                          <td><strong>District : </strong></td>
+                          <td>${post.District}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Division : </strong></td>
+                          <td>${post.Division}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Pincode : </strong></td>
+                          <td>${post.Pincode}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Region : </strong></td>
+                          <td>${post.Region}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>State : </strong></td>
+                          <td>${post.State}</td>
+                          </tr>
+                        
+
+                    </table>
+              </div>
+            </div>
+          `;
+        });
+        
+        document.getElementById('main').innerHTML = main;
+    }else{
+       const myvar = document.getElementById('output').innerHTML = "<div class='alert alert-danger'>No Pincode Found</div>";
+        return false;
+    }
+        
+        
+        console.log(data[0]['PostOffice']);
+      })
+
+    }
+  </script>
+
+
+  <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+<script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+<script>
+
+// d3.csv("pincode.csv").then(function(data) {
+//   data.forEach(function(post){
+//   console.log(post.StateName); // [{"Hello": "world"}, …]
+//   });
+// });
+
+</script>
+
+
+
+  </body>
+</html>
